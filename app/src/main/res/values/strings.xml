@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Morsy Talky</string>
+    <string name="camera_unavailable">Camera unavailable</string>
+    <string name="tv_zoom_ratio_value">zoom ratio value</string>
+    <string name="zoom_ratio_value">zoom ratio value</string>
+
+    <string-array name="brands">
+        <item>Huawei</item>
+        <item>Honor</item>
+        <item>HTC</item>
+        <item>Xiaomi</item>
+        <item>Realme</item>
+        <item>Oppo</item>
+    </string-array>
+</resources>

@@ -1,0 +1,25 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+
+    <dimen name="regular_item_padding">2dp</dimen>
+    <dimen name="flash_margin">18dp</dimen>
+    <dimen name="regular_window_padding">5dp</dimen>
+    <dimen name="regular_window_margin">4dp</dimen>
+    <dimen name="margin_bottom_8">8dp</dimen>
+    <dimen name="margin_top_8">8dp</dimen>
+    <dimen name="margin_bottom_10">10dp</dimen>
+    <dimen name="margin_bottom_12">12dp</dimen>
+    <dimen name="cancel_button_margin_left">5dp</dimen>
+    <dimen name="save_button_margin_right">5dp</dimen>
+
+    <dimen name="default_seek_bar">4dp</dimen>
+
+
+    <dimen name="margin_16">16dp</dimen>
+    <dimen name="settings_item_margin_horizontal">20dp</dimen>
+    <dimen name="settings_item_margin_dividing_section">30dp</dimen>
+    <dimen name="default_elevation">2dp</dimen>
+    <dimen name="default_elevation_plus">3dp</dimen>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+
+</resources>

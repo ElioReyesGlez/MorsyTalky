@@ -3,10 +3,9 @@ package com.erg.morsytalky.util;
 import android.hardware.Camera;
 import android.util.Log;
 import android.view.SurfaceHolder;
+import android.widget.Toast;
 
 import java.io.IOException;
-
-
 
 /**
  * Created by Elio on 18/04/2015.
@@ -15,14 +14,14 @@ public class CameraEngine {
 
     static final String TAG = "CameraEngine_" + CameraUtils.class.getName();
 
-    boolean on;
-    Camera camera;
-    SurfaceHolder surfaceHolder;
+    private boolean on;
+    private Camera camera;
+    private SurfaceHolder surfaceHolder;
 
     Camera.AutoFocusCallback autoFocusCallback = new Camera.AutoFocusCallback() {
         @Override
         public void onAutoFocus(boolean success, Camera camera) {
-
+            Log.d(TAG, "onAutoFocus SUCCESS: " + success );
         }
     };
 

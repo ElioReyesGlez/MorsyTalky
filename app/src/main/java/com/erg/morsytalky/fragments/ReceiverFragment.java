@@ -14,9 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.erg.morsytalky.R;
-import com.erg.morsytalky.interfaces.OnCameraEngine;
-import com.erg.morsytalky.model.adapters.AdapterViewPager;
-import com.erg.morsytalky.util.CameraEngine;
+import com.erg.morsytalky.controller.CameraEngine;
 import com.erg.morsytalky.util.SuperUtils;
 
 public class ReceiverFragment extends Fragment implements SurfaceHolder.Callback {

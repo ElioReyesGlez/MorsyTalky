@@ -31,7 +31,7 @@ public class AdapterViewPager extends FragmentPagerAdapter {
                 receiverFragment = ReceiverFragment.newInstance(transmitterFragment);
                 return receiverFragment;
             default:
-                return null;
+                return transmitterFragment;
         }
     }
 

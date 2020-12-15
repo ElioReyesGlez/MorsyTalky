@@ -1,9 +1,10 @@
-package com.erg.morsytalky.util;
+package com.erg.morsytalky.controller;
 
 import android.hardware.Camera;
 import android.util.Log;
 import android.view.SurfaceHolder;
-import android.widget.Toast;
+
+import com.erg.morsytalky.util.CameraUtils;
 
 import java.io.IOException;
 

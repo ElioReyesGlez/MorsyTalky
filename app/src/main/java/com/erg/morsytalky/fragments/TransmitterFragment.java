@@ -24,12 +24,13 @@ import com.erg.morsytalky.R;
 import com.erg.morsytalky.controller.helpers.MessagesHelper;
 import com.erg.morsytalky.controller.helpers.MorseHelper;
 import com.erg.morsytalky.interfaces.OnCameraEngine;
-import com.erg.morsytalky.util.CameraEngine;
+import com.erg.morsytalky.controller.CameraEngine;
 import com.erg.morsytalky.util.SuperUtils;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import static androidx.annotation.Dimension.SP;
@@ -109,7 +110,7 @@ public class TransmitterFragment extends Fragment implements View.OnClickListene
 
     private void startTransmissionFlow() {
         /*Getting message from user*/
-        final String message = editTextMessage.getText().toString();
+        final String message = Objects.requireNonNull(editTextMessage.getText()).toString();
         /*verifying user entrance its correct*/
         if (!message.isEmpty()) {
             initTransmission(message);
@@ -138,8 +139,6 @@ public class TransmitterFragment extends Fragment implements View.OnClickListene
     }
 
     private void initTransmission(final String message) {
-        SuperUtils.hideView(scaleDown, textInputLayoutMessage);
-        SuperUtils.showView(scaleUp, scrollViewBoxesContainer);
         boxCreator(message);
         Runnable task = new Runnable() {
             @Override
@@ -150,8 +149,8 @@ public class TransmitterFragment extends Fragment implements View.OnClickListene
                         char[] charArray = morse.toCharArray();
                         highlightWord();
                         for (char token : charArray) {
+                            Log.d(TAG, "run: isTransmitting: " + isTransmitting);
                             if (isTransmitting) {
-                                Log.d(TAG, "run: isTransmitting: " + isTransmitting);
                                 switch (token) {
                                     case '.':
                                         flashOn();
@@ -166,18 +165,15 @@ public class TransmitterFragment extends Fragment implements View.OnClickListene
                                         TimeUnit.MILLISECONDS.sleep(DASH_DELAY);
                                         break;
                                     case SPACE:
-                                        flashOn();
+                                        TimeUnit.MILLISECONDS.sleep(INTER_WORD_DELAY);
                                         highlightWord();
-                                        TimeUnit.MILLISECONDS.sleep(INTER_WORD_DELAY);
-                                        flashOff();
-                                        TimeUnit.MILLISECONDS.sleep(INTER_WORD_DELAY);
                                         break;
                                 }
                             } else {
                                 return;
                             }
                         }
-                        interruptTransmission();
+                        interruptTransmission(false);
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -194,7 +190,7 @@ public class TransmitterFragment extends Fragment implements View.OnClickListene
         if (!isTransmitting) {
             startTransmission();
         } else {
-            interruptTransmission();
+            interruptTransmission(true);
         }
     }
 
@@ -261,33 +257,90 @@ public class TransmitterFragment extends Fragment implements View.OnClickListene
     private void highlightWord() {
         /*Getting current Word into TextView Box*/
         if (wordsCont < boxesList.size()) {
-            TextView textView = boxesList.get(wordsCont);
-            textView.setBackgroundResource(R.drawable.background_accent);
+            final TextView textView = boxesList.get(wordsCont);
+            textView.post(new Runnable() {
+                @Override
+                public void run() {
+                    textView.setBackgroundResource(R.drawable.background_accent);
+                }
+            });
             wordsCont++;
         }
     }
 
-    private void interruptTransmission() { //ToDo
+    private void interruptTransmission(boolean interruptedFlag) { //ToDo
         isTransmitting = false;
         blinker.interrupt();
-        btnTransmit.setImageResource(R.drawable.ic_send);
-        SuperUtils.hideView(null, scrollViewBoxesContainer);
-        SuperUtils.showView(null, textInputLayoutMessage);
-        boxesContainer.removeAllViews();
-        MessagesHelper.showInfoMessageWarning(
-                requireActivity(),
-                getString(R.string.transmission_interrupted));
+        btnTransmit.post(new Runnable() {
+            @Override
+            public void run() {
+                btnTransmit.setImageResource(R.drawable.ic_send);
+            }
+        });
+        scrollViewBoxesContainer.post(new Runnable() {
+            @Override
+            public void run() {
+                SuperUtils.hideView(scaleDown, scrollViewBoxesContainer);
+            }
+        });
+        textInputLayoutMessage.post(new Runnable() {
+            @Override
+            public void run() {
+                SuperUtils.showView(scaleUp, textInputLayoutMessage);
+            }
+        });
+        boxesContainer.post(new Runnable() {
+            @Override
+            public void run() {
+                boxesContainer.removeAllViews();
+            }
+        });
+
+        // Resetting words boxes list
+        boxesList.clear();
+        // Resetting words boxes Cont
+        wordsCont = 0;
+        
+        if (interruptedFlag) {
+            MessagesHelper.showInfoMessageWarning(
+                    requireActivity(),
+                    getString(R.string.transmission_interrupted));
+        } else {
+            MessagesHelper.showInfoMessage(
+                    requireActivity(),
+                    getString(R.string.transmission_finished));
+        }
         Log.d(TAG, "stopTransmission: Interrupted!!");
     }
 
 
     private void startTransmission() {
         isTransmitting = true;
-        btnTransmit.setImageResource(R.drawable.ic_stop);
-        if (blinker.isAlive()) {
+        textInputLayoutMessage.post(new Runnable() {
+            @Override
+            public void run() {
+                SuperUtils.hideView(scaleDown, textInputLayoutMessage);
+            }
+        });
+        scrollViewBoxesContainer.post(new Runnable() {
+            @Override
+            public void run() {
+                SuperUtils.showView(scaleUp, scrollViewBoxesContainer);
+            }
+        });
+        btnTransmit.post(new Runnable() {
+            @Override
+            public void run() {
+                btnTransmit.setImageResource(R.drawable.ic_stop);
+            }
+        });
+        if (blinker != null && blinker.isAlive()) {
             blinker.interrupt();
         }
+        // Starting Blinker Thread
+        assert blinker != null;
         blinker.start();
+
         MessagesHelper.showInfoMessage(
                 requireActivity(),
                 getString(R.string.transmission_started_msg));
@@ -303,7 +356,12 @@ public class TransmitterFragment extends Fragment implements View.OnClickListene
     private void flashOn() {
         if (cameraEngine != null) {
             cameraEngine.turnOnFlash();
-            ivFlashIndicator.setImageResource(R.drawable.ic_flash_on);
+            ivFlashIndicator.post(new Runnable() {
+                @Override
+                public void run() {
+                    ivFlashIndicator.setImageResource(R.drawable.ic_flash_on);
+                }
+            });
         } else {
             Log.d(TAG, "flashOn: CameraEngine = null");
         }
@@ -312,7 +370,12 @@ public class TransmitterFragment extends Fragment implements View.OnClickListene
     private void flashOff() {
         if (cameraEngine != null) {
             cameraEngine.turnOffFlash();
-            ivFlashIndicator.setImageResource(R.drawable.ic_flash_off);
+            ivFlashIndicator.post(new Runnable() {
+                @Override
+                public void run() {
+                    ivFlashIndicator.setImageResource(R.drawable.ic_flash_off);
+                }
+            });
         } else {
             Log.d(TAG, "flashOff: CameraEngine = null");
         }

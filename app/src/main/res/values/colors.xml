@@ -51,4 +51,6 @@
     <color name="negro">#b0000000</color>
     <!-- viewfinder exterior darkened area -->
 
+    <color name="control_background">#cc4285f4</color>
+
 </resources>

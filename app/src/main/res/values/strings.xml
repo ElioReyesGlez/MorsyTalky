@@ -23,9 +23,13 @@
     <string name="transmission_finished">Transmission finished!</string>
     <string name="request_permission">Permission needed</string>
     <string name="camera_error">Camera Error</string>
+    <string name="picture">Picture</string>
+    <string name="description_info">Info</string>
+    <string name="intro_message">Hello World!</string>
 
     <string-array name="tabs_titles">
         <item>Transmitter</item>
         <item>Receiver</item>
     </string-array>
+
 </resources>

@@ -21,10 +21,10 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.erg.morsytalky.R;
+import com.erg.morsytalky.controller.CameraEngine;
 import com.erg.morsytalky.controller.helpers.MessagesHelper;
 import com.erg.morsytalky.controller.helpers.MorseHelper;
 import com.erg.morsytalky.interfaces.OnCameraEngine;
-import com.erg.morsytalky.controller.CameraEngine;
 import com.erg.morsytalky.util.SuperUtils;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -153,15 +153,15 @@ public class TransmitterFragment extends Fragment implements View.OnClickListene
                             if (isTransmitting) {
                                 switch (token) {
                                     case '.':
-                                        flashOn();
+                                        cameraEngine.switchFlash(ivFlashIndicator);
                                         TimeUnit.MILLISECONDS.sleep(DOT_DELAY);
-                                        flashOff();
+                                        cameraEngine.switchFlash(ivFlashIndicator);
                                         TimeUnit.MILLISECONDS.sleep(DOT_DELAY);
                                         break;
                                     case '-':
-                                        flashOn();
+                                        cameraEngine.switchFlash(ivFlashIndicator);
                                         TimeUnit.MILLISECONDS.sleep(DASH_DELAY);
-                                        flashOff();
+                                        cameraEngine.switchFlash(ivFlashIndicator);
                                         TimeUnit.MILLISECONDS.sleep(DASH_DELAY);
                                         break;
                                     case SPACE:
@@ -300,7 +300,7 @@ public class TransmitterFragment extends Fragment implements View.OnClickListene
         boxesList.clear();
         // Resetting words boxes Cont
         wordsCont = 0;
-        
+
         if (interruptedFlag) {
             MessagesHelper.showInfoMessageWarning(
                     requireActivity(),
@@ -353,31 +353,4 @@ public class TransmitterFragment extends Fragment implements View.OnClickListene
         this.cameraEngine = cameraEngine;
     }
 
-    private void flashOn() {
-        if (cameraEngine != null) {
-            cameraEngine.turnOnFlash();
-            ivFlashIndicator.post(new Runnable() {
-                @Override
-                public void run() {
-                    ivFlashIndicator.setImageResource(R.drawable.ic_flash_on);
-                }
-            });
-        } else {
-            Log.d(TAG, "flashOn: CameraEngine = null");
-        }
-    }
-
-    private void flashOff() {
-        if (cameraEngine != null) {
-            cameraEngine.turnOffFlash();
-            ivFlashIndicator.post(new Runnable() {
-                @Override
-                public void run() {
-                    ivFlashIndicator.setImageResource(R.drawable.ic_flash_off);
-                }
-            });
-        } else {
-            Log.d(TAG, "flashOff: CameraEngine = null");
-        }
-    }
 }

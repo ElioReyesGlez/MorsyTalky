@@ -29,6 +29,9 @@ public class Constants {
     public static final int MIN_TEXT_SIZE = 12;
     public static final int TEXT_SIZE = 19;
 
+    /*Blank*/
+    public static final int BLANK = '-';
+
     public static ArrayList<String> getBrands(Context context) {
         ArrayList<String> brands = new ArrayList<>();
         Collections.addAll(brands, context.getResources().getStringArray(R.array.brands));

@@ -17,15 +17,18 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.erg.morsytalky.MainActivity;
 import com.erg.morsytalky.R;
 import com.erg.morsytalky.controller.CameraEngine;
 import com.erg.morsytalky.controller.helpers.MessagesHelper;
 import com.erg.morsytalky.controller.helpers.MorseHelper;
 import com.erg.morsytalky.interfaces.OnCameraEngine;
 import com.erg.morsytalky.util.SuperUtils;
+import com.erg.morsytalky.views.CustomViewPager;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -58,6 +61,7 @@ public class TransmitterFragment extends Fragment implements View.OnClickListene
     private Animation scaleUp, scaleDown;
     private int wordsCont = 0;
     private Thread blinker;
+    private CustomViewPager viewPager;
 
     public TransmitterFragment() {
     }
@@ -77,6 +81,15 @@ public class TransmitterFragment extends Fragment implements View.OnClickListene
         rootView = inflater.inflate(R.layout.fragment_transmitter, container, false);
         setUpView();
         return rootView;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        MainActivity mainActivity = (MainActivity) this.getActivity();
+        if (mainActivity != null) {
+            viewPager = mainActivity.viewPager;
+        }
     }
 
     private void setUpView() {
@@ -140,6 +153,9 @@ public class TransmitterFragment extends Fragment implements View.OnClickListene
 
     private void initTransmission(final String message) {
         boxCreator(message);
+        if (cameraEngine.isCameraConnected) {
+            cameraEngine.release();
+        }
         Runnable task = new Runnable() {
             @Override
             public void run() {
@@ -153,15 +169,15 @@ public class TransmitterFragment extends Fragment implements View.OnClickListene
                             if (isTransmitting) {
                                 switch (token) {
                                     case '.':
-                                        cameraEngine.switchFlash(ivFlashIndicator);
+                                        cameraEngine.switchFlashOn(ivFlashIndicator);
                                         TimeUnit.MILLISECONDS.sleep(DOT_DELAY);
-                                        cameraEngine.switchFlash(ivFlashIndicator);
+                                        cameraEngine.switchFlashOff(ivFlashIndicator);
                                         TimeUnit.MILLISECONDS.sleep(DOT_DELAY);
                                         break;
                                     case '-':
-                                        cameraEngine.switchFlash(ivFlashIndicator);
+                                        cameraEngine.switchFlashOn(ivFlashIndicator);
                                         TimeUnit.MILLISECONDS.sleep(DASH_DELAY);
-                                        cameraEngine.switchFlash(ivFlashIndicator);
+                                        cameraEngine.switchFlashOff(ivFlashIndicator);
                                         TimeUnit.MILLISECONDS.sleep(DASH_DELAY);
                                         break;
                                     case SPACE:
@@ -174,6 +190,7 @@ public class TransmitterFragment extends Fragment implements View.OnClickListene
                             }
                         }
                         interruptTransmission(false);
+                        viewPager.setSwipingEnabled(true);
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -189,8 +206,14 @@ public class TransmitterFragment extends Fragment implements View.OnClickListene
         blinker = new Thread(task);
         if (!isTransmitting) {
             startTransmission();
+            if (viewPager != null) {
+                viewPager.setSwipingEnabled(false);
+            }
         } else {
             interruptTransmission(true);
+            if (viewPager != null) {
+                viewPager.setSwipingEnabled(true);
+            }
         }
     }
 
@@ -268,7 +291,7 @@ public class TransmitterFragment extends Fragment implements View.OnClickListene
         }
     }
 
-    private void interruptTransmission(boolean interruptedFlag) { //ToDo
+    private void interruptTransmission(boolean interruptionMessage) {
         isTransmitting = false;
         blinker.interrupt();
         btnTransmit.post(new Runnable() {
@@ -301,7 +324,7 @@ public class TransmitterFragment extends Fragment implements View.OnClickListene
         // Resetting words boxes Cont
         wordsCont = 0;
 
-        if (interruptedFlag) {
+        if (interruptionMessage) {
             MessagesHelper.showInfoMessageWarning(
                     requireActivity(),
                     getString(R.string.transmission_interrupted));

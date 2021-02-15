@@ -1,11 +1,13 @@
 package com.erg.morsytalky.util;
 
 import android.content.Context;
+import android.util.Size;
 
 import com.erg.morsytalky.R;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 
 public class Constants {
     /*VIBRATION*/
@@ -31,6 +33,9 @@ public class Constants {
 
     /*Blank*/
     public static final int BLANK = '-';
+
+    /*TIME DELAY*/
+    public final static long DEFAULT_TIME = 1000;
 
     public static ArrayList<String> getBrands(Context context) {
         ArrayList<String> brands = new ArrayList<>();

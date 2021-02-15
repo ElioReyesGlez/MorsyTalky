@@ -3,14 +3,30 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/background_white"
     tools:context=".fragments.ReceiverFragment">
 
-    <com.erg.morsytalky.views.AutoFitTextureView
+<!--    <com.erg.morsytalky.views.AutoFitTextureView
         android:id="@+id/texture"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true" />
+        android:layout_alignParentTop="true" />-->
+
+    <TextureView
+        android:id="@+id/main_texture_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:padding="@dimen/regular_item_padding"/>
+
+    <SurfaceView
+        android:id="@+id/square_view_surface"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:focusable="true" />
 
     <TextView
         android:layout_width="wrap_content"

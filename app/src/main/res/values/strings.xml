@@ -26,6 +26,8 @@
     <string name="picture">Picture</string>
     <string name="description_info">Info</string>
     <string name="intro_message">Hello World!</string>
+    <string name="ok">Ok</string>
+    <string name="permission_needed">Required access to camera</string>
 
     <string-array name="tabs_titles">
         <item>Transmitter</item>

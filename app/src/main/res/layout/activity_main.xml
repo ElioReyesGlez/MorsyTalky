@@ -5,10 +5,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="@dimen/regular_item_padding"
     android:orientation="vertical"
     tools:context=".MainActivity"
-    android:background="@color/float_transparent"
+    android:background="@drawable/background_white"
     android:weightSum="2"
     android:id="@+id/main_root">
 
@@ -20,7 +19,7 @@
             app:tabIndicatorColor="@color/custom_background_text"
             app:tabSelectedTextColor="@color/custom_background_text"/>
 
-        <androidx.viewpager.widget.ViewPager
+        <com.erg.morsytalky.views.CustomViewPager
             android:id="@+id/view_pager_main"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

@@ -37,6 +37,25 @@ public class MessagesHelper {
         }
     }
 
+    public static void showInfoMessageWithFinishContext(final Activity context, String msg) {
+        if (!context.isFinishing()) {
+            final Snackbar snackBar = Snackbar.make(context.findViewById(R.id.main_root)
+                    , msg, Snackbar.LENGTH_SHORT);
+            snackBar.setBackgroundTint(context.getColor(R.color.colorPrimary));
+            snackBar.setDuration(Snackbar.LENGTH_INDEFINITE);
+            snackBar.setAction(context.getString(R.string.ok), new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (snackBar.isShown())
+                        snackBar.dismiss();
+                    context.finish();
+                }
+            });
+            if (!snackBar.isShown())
+                snackBar.show();
+        }
+    }
+
     public static void showInfoMessageFragment(View rootView, Activity context, String msg) {
         if (!context.isFinishing()) {
             Snackbar snackBar = Snackbar.make(rootView.findViewById(R.id.main_root)

@@ -8,12 +8,15 @@ import android.os.Build;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.util.Log;
+import android.util.Size;
 import android.view.Display;
 import android.view.View;
 import android.view.animation.Animation;
 import android.widget.TextView;
 
 import androidx.fragment.app.FragmentActivity;
+
+import java.util.Comparator;
 
 import static com.erg.morsytalky.util.Constants.MIN_VIBRATE_TIME;
 import static com.erg.morsytalky.util.Constants.SPECIAL_MIN_VIBRATE_TIME;
@@ -23,6 +26,15 @@ import static com.erg.morsytalky.util.Constants.VIBRATE_TIME;
 
 public class SuperUtils {
     private static final String TAG = "SuperUtils";
+
+    /*Comparator Class*/
+    public static class CompareSizeByArea implements Comparator<Size> {
+        @Override
+        public int compare(Size o1, Size o2) {
+            return Long.signum((long) o1.getWidth() * o1.getWidth() /
+                    (long) o2.getWidth() * o2.getHeight());
+        }
+    }
 
     public static void vibrate(Context context) {
         long VIBRATION_TIME = getRightVibrationTime(context, true);
